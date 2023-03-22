@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import GPTRepoLoader from "./GPTRepoLoader";
 import KeysHandler from "./KeysHandler";
+import PromptQuerier from "./PromptQuerier";
 
 function App() {
   const [prompt, setPrompt] = useState("");
@@ -28,6 +29,7 @@ function App() {
       <GPTRepoLoader onSubmit={(prompt) => setPrompt(prompt)} />
 
       <h2>Step 3: Ask GPT, Render SourceCode</h2>
+      <PromptQuerier basedPrompt={prompt} />
     </div>
   );
 }
