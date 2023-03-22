@@ -12,6 +12,18 @@ interface FileNode {
   isLeaf: boolean;
 }
 
+function formatGithubURL(url: string): string {
+  // Split the URL into parts
+  const parts = url.split("/");
+
+  // Extract the owner and project name
+  const owner = parts[3];
+  const project = parts[4];
+
+  // Combine the owner and project name and return the result
+  return `${owner}/${project}`;
+}
+
 const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
   const [repoUrl, setRepoUrl] = useState<string>("");
   const [treeData, setTreeData] = useState<FileNode[]>([]);
@@ -25,9 +37,7 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
       );
       const contents = await response.json();
       const files = contents.filter((item: any) => item.type === "file");
-      const sourceCode = files
-        .map((file: any) => atob(file.content))
-        .join("\n");
+      const sourceCode = files.map((file: any) => file.content).join("\n");
       const treeData = files.map((file: any) => ({
         title: file.name,
         key: file.path,
@@ -36,13 +46,15 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
       setTreeData(treeData);
       setPrompt(sourceCode);
       onSubmit(sourceCode);
+
+      console.log("debug", treeData, sourceCode);
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleRepoUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRepoUrl(event.target.value);
+    setRepoUrl(formatGithubURL(event.target.value));
   };
 
   const handleFileSelect = (selectedKeys: Key[]) => {
