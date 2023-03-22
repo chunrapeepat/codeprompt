@@ -29,7 +29,7 @@ function App() {
       <GPTRepoLoader onSubmit={(prompt) => setPrompt(prompt)} />
 
       <h2>Step 3: Ask GPT, Render SourceCode</h2>
-      <PromptQuerier basedPrompt={prompt} />
+      <PromptQuerier basedPrompt={prompt} openAIKey={openAIKey} />
     </div>
   );
 }

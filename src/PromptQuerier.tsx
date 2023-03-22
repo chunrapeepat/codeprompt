@@ -1,18 +1,28 @@
 import React from "react";
+import { generateResponse } from "./utils/openai";
 
 interface PromptQuerierProps {
   basedPrompt: string;
+  openAIKey: string;
 }
 
-const PromptQuerier: React.FC<PromptQuerierProps> = ({ basedPrompt }) => {
-  const [newPrompt, setNewPrompt] = React.useState(basedPrompt);
+const PromptQuerier: React.FC<PromptQuerierProps> = ({
+  basedPrompt,
+  openAIKey,
+}) => {
+  const [code, setCode] = React.useState("");
+  const [instructionPrompt, setInstructionPrompt] = React.useState(basedPrompt);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewPrompt(event.target.value);
+    setInstructionPrompt(event.target.value);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const prompt = basedPrompt + "\r\n" + instructionPrompt;
+
+    const res = await generateResponse(prompt, openAIKey);
+    setCode(res || "");
   };
 
   return (
@@ -22,13 +32,13 @@ const PromptQuerier: React.FC<PromptQuerierProps> = ({ basedPrompt }) => {
         <input
           id="promptInput"
           type="text"
-          value={newPrompt}
+          value={instructionPrompt}
           onChange={handleInputChange}
         />
         <button type="submit">Submit</button>
       </form>
 
-      <pre>Code goes her</pre>
+      <pre>{code}</pre>
     </div>
   );
 };
