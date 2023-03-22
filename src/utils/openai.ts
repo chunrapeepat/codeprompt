@@ -1,4 +1,3 @@
-import { Content } from "antd/es/layout/layout";
 import { Configuration, OpenAIApi } from "openai";
 // import { encoding_for_model as encodingForModel } from "@dqbd/tiktoken";
 

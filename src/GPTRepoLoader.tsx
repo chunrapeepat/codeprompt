@@ -5,7 +5,7 @@ import { DataNode } from "antd/es/tree";
 import { base64Decode, formatGithubURL, isFolder, isImage } from "./helper";
 
 interface GPTRepoLoaderProps {
-  onSubmit: (prompt: string) => void;
+  onSubmit: (prompt: string, fileContents: any[]) => void;
 }
 
 interface GithubObject {
@@ -99,7 +99,7 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
     });
     prompt += `\r\n--END--\r\n\r\n`;
 
-    onSubmit(prompt);
+    onSubmit(prompt, fileContents);
   };
 
   return (

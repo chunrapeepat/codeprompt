@@ -5,6 +5,7 @@ import PromptQuerier from "./PromptQuerier";
 
 function App() {
   const [prompt, setPrompt] = useState("");
+  const [fileContents, setFileContents] = useState<any[]>([]);
   const [openAIKey, setOpenAIKey] = useState(
     localStorage.getItem("openAIKey") || ""
   );
@@ -26,10 +27,19 @@ function App() {
       <KeysHandler onSubmit={handleKeysSubmit} />
 
       <h2>Step 2: GPTRepoLoader</h2>
-      <GPTRepoLoader onSubmit={(prompt) => setPrompt(prompt)} />
+      <GPTRepoLoader
+        onSubmit={(prompt, fileContents) => {
+          setPrompt(prompt);
+          setFileContents(fileContents);
+        }}
+      />
 
       <h2>Step 3: Ask GPT, Render SourceCode</h2>
-      <PromptQuerier basedPrompt={prompt} openAIKey={openAIKey} />
+      <PromptQuerier
+        fileContents={fileContents}
+        basedPrompt={prompt}
+        openAIKey={openAIKey}
+      />
     </div>
   );
 }
