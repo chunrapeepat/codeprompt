@@ -3,6 +3,7 @@ import GPTRepoLoader from "./GPTRepoLoader";
 import KeysHandler from "./KeysHandler";
 
 function App() {
+  const [prompt, setPrompt] = useState("");
   const [openAIKey, setOpenAIKey] = useState(
     localStorage.getItem("openAIKey") || ""
   );
@@ -24,7 +25,7 @@ function App() {
       <KeysHandler onSubmit={handleKeysSubmit} />
 
       <h2>Step 2: GPTRepoLoader</h2>
-      <GPTRepoLoader onSubmit={console.log} />
+      <GPTRepoLoader onSubmit={(prompt) => setPrompt(prompt)} />
 
       <h2>Step 3: Ask GPT, Render SourceCode</h2>
     </div>

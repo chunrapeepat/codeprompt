@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Tree } from "antd";
 import { Key } from "antd/es/table/interface";
 import { DataNode } from "antd/es/tree";
-import { formatGithubURL } from "./helper";
+import { base64Decode, formatGithubURL, isFolder, isImage } from "./helper";
 
 interface GPTRepoLoaderProps {
   onSubmit: (prompt: string) => void;
@@ -52,7 +52,6 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
   const [repoUrl, setRepoUrl] = useState<string>("");
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [checkedKeys, setCheckedKeys] = useState<Key[]>();
-  const [prompt, setPrompt] = useState<string>("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,17 +72,34 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
     setRepoUrl(formatGithubURL(event.target.value));
   };
 
-  const handleFileSelect = (selectedKeys: Key[]) => {
-    const selectedFile = treeData.find(
-      (file) => file.key.toString() === selectedKeys[0].toString()
+  const generatePrompt = async () => {
+    const filenames =
+      checkedKeys
+        ?.map((f) => f.toString())
+        .filter((f) => !isImage(f) && !isFolder(f)) || [];
+
+    const fileContents = await Promise.all(
+      filenames.map((filename) =>
+        fetch(
+          `https://api.github.com/repos/${repoUrl}/contents/${filename}`
+        ).then((res) => {
+          const data = res.json().then((data) => {
+            data.content = base64Decode(data.content);
+            return data;
+          });
+          return data;
+        })
+      )
     );
-    if (selectedFile) {
-      const fileUrl = `https://raw.githubusercontent.com/${repoUrl}/main/${selectedFile.title}`;
-      fetch(fileUrl)
-        .then((response) => response.text())
-        .then((sourceCode) => setPrompt(sourceCode))
-        .catch((error) => console.error(error));
-    }
+
+    let prompt = `The following text is a Git repository with code. The structure of the text are sections that begin with ----, followed by a single line containing the file path and file name, followed by a variable amount of lines containing the file contents. The text representing the Git repository ends when the symbols --END-- are encounted. Any further text beyond --END-- are meant to be interpreted as instructions using the aforementioned Git repository as context.\r\n`;
+    fileContents.forEach((fileContent) => {
+      const { path, content } = fileContent;
+      prompt += `\r\n----\r\n${path}\r\n${content}\r\n`;
+    });
+    prompt += `\r\n--END--\r\n\r\n`;
+
+    onSubmit(prompt);
   };
 
   return (
@@ -101,15 +117,8 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
         checkedKeys={checkedKeys}
         treeData={treeData}
       />
-      <pre>{prompt}</pre>
 
-      <button
-        onClick={() => {
-          console.log("debug", checkedKeys);
-        }}
-      >
-        DONE!
-      </button>
+      <button onClick={generatePrompt}>DONE!</button>
     </div>
   );
 };
