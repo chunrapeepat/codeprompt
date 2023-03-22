@@ -47,7 +47,7 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
       setPrompt(sourceCode);
       onSubmit(sourceCode);
 
-      console.log("debug", treeData, sourceCode);
+      console.log("debug", contents);
     } catch (error) {
       console.error(error);
     }

@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from "react";
 
 interface KeysHandlerProps {
-  onSubmit: (openaiKey: string, githubKey: string) => void;
+  onSubmit: (openAIKey: string) => void;
 }
 
 const KeysHandler: React.FC<KeysHandlerProps> = ({ onSubmit }) => {
-  const [openaiKey, setOpenaiKey] = useState(
-    localStorage.getItem("openaiKey") || ""
-  );
-  const [githubKey, setGithubKey] = useState(
-    localStorage.getItem("githubKey") || ""
+  const [openAIKey, setopenAIKey] = useState(
+    localStorage.getItem("openAIKey") || ""
   );
 
   useEffect(() => {
-    localStorage.setItem("openaiKey", openaiKey);
-    localStorage.setItem("githubKey", githubKey);
-  }, [openaiKey, githubKey]);
+    localStorage.setItem("openAIKey", openAIKey);
+  }, [openAIKey]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(openaiKey, githubKey);
+    onSubmit(openAIKey);
   };
 
   return (
@@ -28,16 +24,8 @@ const KeysHandler: React.FC<KeysHandlerProps> = ({ onSubmit }) => {
         Open AI Key:
         <input
           type="text"
-          value={openaiKey}
-          onChange={(e) => setOpenaiKey(e.target.value)}
-        />
-      </label>
-      <label>
-        Github Key:
-        <input
-          type="text"
-          value={githubKey}
-          onChange={(e) => setGithubKey(e.target.value)}
+          value={openAIKey}
+          onChange={(e) => setopenAIKey(e.target.value)}
         />
       </label>
       <button type="submit">Submit</button>

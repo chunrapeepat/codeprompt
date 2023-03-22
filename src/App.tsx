@@ -4,14 +4,10 @@ import KeysHandler from "./KeysHandler";
 
 function App() {
   const [openAIKey, setOpenAIKey] = useState(
-    localStorage.getItem("openaiKey") || ""
+    localStorage.getItem("openAIKey") || ""
   );
-  const [githubKey, setGithubKey] = useState(
-    localStorage.getItem("githubKey") || ""
-  );
-  const handleKeysSubmit = (openAIKey: string, githubKey: string) => {
+  const handleKeysSubmit = (openAIKey: string) => {
     setOpenAIKey(openAIKey);
-    setGithubKey(githubKey);
   };
 
   return (
@@ -24,11 +20,13 @@ function App() {
         perspiciatis error.
       </p>
 
-      <h2>Step 1: Keys</h2>
+      <h2>Init: Keys</h2>
       <KeysHandler onSubmit={handleKeysSubmit} />
 
       <h2>Step 2: GPTRepoLoader</h2>
       <GPTRepoLoader onSubmit={console.log} />
+
+      <h2>Step 3: Ask GPT, Render SourceCode</h2>
     </div>
   );
 }
