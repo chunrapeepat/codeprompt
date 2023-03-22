@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import GPTRepoLoader from "./GPTRepoLoader";
 import KeysHandler from "./KeysHandler";
 
 function App() {
-  // Step 1: Handle Keys
   const [openAIKey, setOpenAIKey] = useState(
     localStorage.getItem("openaiKey") || ""
   );
@@ -24,7 +24,11 @@ function App() {
         perspiciatis error.
       </p>
 
+      <h2>Step 1: Keys</h2>
       <KeysHandler onSubmit={handleKeysSubmit} />
+
+      <h2>Step 2: GPTRepoLoader</h2>
+      <GPTRepoLoader onSubmit={console.log} />
     </div>
   );
 }
