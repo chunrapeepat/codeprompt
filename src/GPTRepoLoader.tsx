@@ -51,6 +51,7 @@ async function processContent(contents: GithubObject[]): Promise<DataNode[]> {
 const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
   const [repoUrl, setRepoUrl] = useState<string>("");
   const [treeData, setTreeData] = useState<DataNode[]>([]);
+  const [checkedKeys, setCheckedKeys] = useState<Key[]>();
   const [prompt, setPrompt] = useState<string>("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -96,16 +97,19 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
       </form>
       <Tree
         checkable
-        // onExpand={onExpand}
-        // expandedKeys={expandedKeys}
-        // autoExpandParent={autoExpandParent}
-        // onCheck={onCheck}
-        // checkedKeys={checkedKeys}
-        // onSelect={onSelect}
-        // selectedKeys={selectedKeys}
+        onCheck={(keys) => setCheckedKeys(keys as Key[])}
+        checkedKeys={checkedKeys}
         treeData={treeData}
       />
       <pre>{prompt}</pre>
+
+      <button
+        onClick={() => {
+          console.log("debug", checkedKeys);
+        }}
+      >
+        DONE!
+      </button>
     </div>
   );
 };
