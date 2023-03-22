@@ -1,32 +1,56 @@
 import { useState } from "react";
 import { Tree } from "antd";
 import { Key } from "antd/es/table/interface";
+import { DataNode } from "antd/es/tree";
+import { formatGithubURL } from "./helper";
 
 interface GPTRepoLoaderProps {
-  onSubmit: (sourceCode: string) => void;
+  onSubmit: (prompt: string) => void;
 }
 
-interface FileNode {
-  title: string;
-  key: string;
-  isLeaf: boolean;
+interface GithubObject {
+  name: string;
+  path: string;
+  sha: string;
+  size: number;
+  url: string;
+  html_url: string;
+  git_url: string;
+  download_url: string | null;
+  type: string;
+  _links: {
+    self: string;
+    git: string;
+    html: string;
+  };
 }
+async function processContent(contents: GithubObject[]): Promise<DataNode[]> {
+  const result: DataNode[] = [];
 
-function formatGithubURL(url: string): string {
-  // Split the URL into parts
-  const parts = url.split("/");
+  for (const item of contents) {
+    if (item.type === "file") {
+      result.push({
+        title: item.name,
+        key: item.path,
+      });
+    } else if (item.type === "dir") {
+      const response = await fetch(item._links.self);
+      const subContents = await response.json();
+      const children = await processContent(subContents);
+      result.push({
+        title: item.name,
+        key: item.path,
+        children,
+      });
+    }
+  }
 
-  // Extract the owner and project name
-  const owner = parts[3];
-  const project = parts[4];
-
-  // Combine the owner and project name and return the result
-  return `${owner}/${project}`;
+  return result;
 }
 
 const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
   const [repoUrl, setRepoUrl] = useState<string>("");
-  const [treeData, setTreeData] = useState<FileNode[]>([]);
+  const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [prompt, setPrompt] = useState<string>("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -36,18 +60,9 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
         `https://api.github.com/repos/${repoUrl}/contents/`
       );
       const contents = await response.json();
-      const files = contents.filter((item: any) => item.type === "file");
-      const sourceCode = files.map((file: any) => file.content).join("\n");
-      const treeData = files.map((file: any) => ({
-        title: file.name,
-        key: file.path,
-        isLeaf: true,
-      }));
-      setTreeData(treeData);
-      setPrompt(sourceCode);
-      onSubmit(sourceCode);
+      const treeData = await processContent(contents);
 
-      console.log("debug", contents);
+      setTreeData(treeData);
     } catch (error) {
       console.error(error);
     }
@@ -75,11 +90,21 @@ const GPTRepoLoader: React.FC<GPTRepoLoaderProps> = ({ onSubmit }) => {
       <form onSubmit={handleSubmit}>
         <label>
           Github Repo URL:
-          <input type="text" value={repoUrl} onChange={handleRepoUrlChange} />
+          <input type="text" onChange={handleRepoUrlChange} />
         </label>
         <button type="submit">Load Repo</button>
       </form>
-      <Tree treeData={treeData} onSelect={handleFileSelect} />
+      <Tree
+        checkable
+        // onExpand={onExpand}
+        // expandedKeys={expandedKeys}
+        // autoExpandParent={autoExpandParent}
+        // onCheck={onCheck}
+        // checkedKeys={checkedKeys}
+        // onSelect={onSelect}
+        // selectedKeys={selectedKeys}
+        treeData={treeData}
+      />
       <pre>{prompt}</pre>
     </div>
   );
