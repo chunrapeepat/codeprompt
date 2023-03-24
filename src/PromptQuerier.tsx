@@ -1,4 +1,5 @@
 import { encode } from "gpt-token-utils";
+import { ChatCompletionRequestMessage } from "openai";
 import React from "react";
 import ReactDiffViewer from "react-diff-viewer";
 import { generateResponse } from "./utils/openai";
@@ -26,8 +27,29 @@ const PromptQuerier: React.FC<PromptQuerierProps> = ({
     const prompt = basedPrompt + "\r\n" + instructionPrompt;
     console.log("prompt token = ", encode(prompt).length);
 
-    const res = await generateResponse(prompt, openAIKey);
-    setCode(res || "");
+    const prompts: ChatCompletionRequestMessage[] = [
+      {
+        role: "user",
+        content: prompt,
+      },
+    ];
+    let msg = await generateResponse(prompts, openAIKey);
+    const result = [msg];
+    while (!msg?.includes("---END---")) {
+      prompts.push({
+        role: "assistant",
+        content: msg,
+      });
+      prompts.push({
+        role: "user",
+        content: "continue",
+      });
+      msg = await generateResponse(prompts, openAIKey);
+      result.push(msg);
+    }
+
+    console.log("debug", result);
+    // setCode(res || "");
   };
 
   return (
@@ -43,11 +65,13 @@ const PromptQuerier: React.FC<PromptQuerierProps> = ({
         <button type="submit">Submit</button>
       </form>
 
-      <ReactDiffViewer
-        oldValue={(fileContents[0] || { content: "" }).content}
-        newValue={code}
-        splitView={true}
-      />
+      {/* {code && (
+        <ReactDiffViewer
+          oldValue={(fileContents[0] || { content: "" }).content}
+          newValue={code}
+          splitView={true}
+        />
+      )} */}
     </div>
   );
 };

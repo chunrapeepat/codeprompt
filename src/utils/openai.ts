@@ -1,10 +1,13 @@
-import { Configuration, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 // import { encoding_for_model as encodingForModel } from "@dqbd/tiktoken";
 
 const model = "gpt-3.5-turbo";
 // const encoder = encodingForModel(model);
 
-export const generateResponse = async (prompt: string, apiKey: string) => {
+export const generateResponse = async (
+  prompts: ChatCompletionRequestMessage[],
+  apiKey: string
+) => {
   // if (encoder.encode(prompt).length > 4000) {
   //   throw new Error(
   //     "The diff is too large for the OpenAI API. Try reducing the number of staged changes, or write your own commit message."
@@ -21,15 +24,12 @@ export const generateResponse = async (prompt: string, apiKey: string) => {
       {
         role: "system",
         content:
-          "You are a helpful developer assistant. Output in a format of filename followed by code block. Without any explanation messages.",
+          "You are a helpful developer assistant. Output in a format of filename followed by code block without any explanation messages. Once you output everything based on the user's prompt, end the output with ---END---",
       },
-      {
-        role: "user",
-        content: prompt,
-      },
+      ...prompts,
     ],
     temperature: 0.2,
   });
 
-  return completion.data.choices[0].message?.content;
+  return completion.data.choices[0].message?.content || "";
 };
