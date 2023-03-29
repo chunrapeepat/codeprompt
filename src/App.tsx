@@ -14,6 +14,7 @@ import {
 import MonacoEditor from "@monaco-editor/react";
 import { StepHeading } from "./common/components";
 import CopyButton from "./common/CopyButton";
+import { countTokens } from "./utils/helper";
 
 const Container = styled.div`
   width: 800px;

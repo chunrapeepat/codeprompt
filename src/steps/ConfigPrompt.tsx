@@ -1,5 +1,5 @@
 import { Button, Card, Divider, Input, Progress } from "antd";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StepHeading } from "../common/components";
 import { GithubFileObject } from "../common/github.interface";
 import { countTokens, numberWithCommas } from "../utils/helper";
@@ -21,13 +21,28 @@ interface ConfigPromptProps {
 const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
   const [instruction, setInstruction] = useState<string>("");
   const [editedFiles, setEditedFiles] =
-    useState<(GithubFileObject & { isExpanded?: boolean })[]>(files);
+    useState<
+      (GithubFileObject & { isExpanded?: boolean; tokenUsed?: number })[]
+    >(files);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>(
+    undefined
+  );
+
+  const instructionTokenUsed = useMemo(
+    () => countTokens(instruction),
+    [instruction]
+  );
+  useEffect(() => {
+    const newEditedFiles = editedFiles.map((file) => {
+      file.tokenUsed = countTokens(file.content);
+      return file;
+    });
+    setEditedFiles(newEditedFiles);
+  }, []);
 
   const totalTokenUsed =
-    editedFiles
-      .map((file) => countTokens(file.content))
-      .reduce((a, b) => a + b) +
-    countTokens(instruction) +
+    editedFiles.map((file) => file.tokenUsed || 0).reduce((a, b) => a + b) +
+    instructionTokenUsed +
     defaultTemplateTokenUsed;
   const tokenUsedPercentage = 100 * (totalTokenUsed / model.maxTokens);
 
@@ -50,6 +65,14 @@ const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
       newFiles[index].content = value;
     }
     setEditedFiles(newFiles);
+
+    clearTimeout(timeoutId);
+    const newTimeoutId = setTimeout(() => {
+      const newFiles = [...editedFiles];
+      newFiles[index].tokenUsed = countTokens(value || "");
+      setEditedFiles(newFiles);
+    }, 500);
+    setTimeoutId(newTimeoutId);
   };
 
   return (
@@ -77,7 +100,7 @@ const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
           size="small"
           extra={
             <div style={{ color: "#555", fontStyle: "italic" }}>
-              Token used: {numberWithCommas(countTokens(file.content))}
+              Token used: {numberWithCommas(file.tokenUsed || 0)}
             </div>
           }
         >
@@ -111,7 +134,7 @@ const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
         title="Instruction"
         extra={
           <div style={{ color: "#555", fontStyle: "italic" }}>
-            Token used: {numberWithCommas(countTokens(instruction))}
+            Token used: {numberWithCommas(instructionTokenUsed)}
           </div>
         }
       >

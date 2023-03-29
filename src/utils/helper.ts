@@ -2,6 +2,7 @@ import GPT3Tokenizer from "gpt3-tokenizer";
 
 const tokenizer = new GPT3Tokenizer({ type: "gpt3" });
 export function countTokens(text: string): number {
+  console.log("test/");
   return tokenizer.encode(text).bpe.length;
 }
 
