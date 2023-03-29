@@ -37,10 +37,10 @@ async function processContent(contents: GithubObject[]): Promise<DataNode[]> {
   return result;
 }
 
-interface Props {
+interface SelectRepoProps {
   onSubmit: (files: GithubFileObject[]) => void;
 }
-const SelectRepo = ({ onSubmit }: Props) => {
+const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [repoURL, setRepoURL] = useState<string>("");
   const [treeData, setTreeData] = useState<DataNode[]>([]);
