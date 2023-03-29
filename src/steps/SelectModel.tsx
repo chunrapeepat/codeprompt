@@ -1,6 +1,6 @@
 import { Button, Select } from "antd";
 import { useState } from "react";
-import MODELS from "./common/models";
+import MODELS from "../common/models";
 
 const { Option } = Select;
 

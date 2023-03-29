@@ -1,8 +1,9 @@
 import React from "react";
 import { Steps } from "antd";
 import styled from "styled-components";
-import SelectModel from "./SelectModel";
+import SelectModel from "./steps/SelectModel";
 import MODELS from "./common/models";
+import SelectRepo from "./steps/SelectRepo";
 
 const Container = styled.div`
   width: 800px;
@@ -75,15 +76,13 @@ function App() {
           <SelectModel
             onSelectionChange={(modelId) => {
               setSelectedModel(MODELS[modelId]);
-              setStep(Math.min(step + 1, 4));
+
+              if (step > 1) return;
+              setStep(Math.min(step + 1, 1));
             }}
           />
 
-          {step >= 1 && (
-            <div>
-              <h2>Select Repo</h2>
-            </div>
-          )}
+          {step >= 1 && <SelectRepo onSubmit={console.log} />}
         </div>
       </Grid>
       <Footer />
