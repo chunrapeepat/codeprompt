@@ -1,46 +1,69 @@
-# Getting Started with Create React App
+# CodePrompt
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> CodePrompt is the code repository loader interface that consumes your relevant code and turns it into a GPT prompt — allowing the GPT to write more complex code for you.
 
-## Available Scripts
+<div align="center">
+    <img src="https://codeprompt.xyz/ogimage.jpeg" width="600" />
+</div>
+<br/>
 
-In the project directory, you can run:
+CodePrompt is an experiment and an attempt to let GPT write more complex code while taking into consideration of the project's context. This includes tasks such as implementing a function that evolves edits on multiple files, creating new components while reusing existing functions, etc.
 
-### `npm start`
+The inspiration and ideas for this project were primarily drawn from mpoon/gpt-repository-loader. However, due to its limitations in loading all files into the prompt and encountering token context limit issues, using gpt-repository-loader is currently impractical.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+So in CodePrompt, we add functionalities such as file selection and code editing, which enable developers to selectively choose relevant files and specific portions of code based to build a GPT prompt on their requirements.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+[Try it yourself](https://codeprompt.xyz), [Report a Bug / Request a Feature](https://github.com/chunrapeepat/codeprompt/issues)
 
-### `npm test`
+## 📖 How to use:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Choose a GPT model from the available options, such as GPT-3.5, GPT-4, or GPT-4-32K.
+2. Select a public repository that you want to work with. (not support private repo yet)
+3. Choose the relevant files from the repository that you want to include into the prompt.
+4. Remove any irrelevant code and add specific instructions as needed.
+5. Copy the prompt to your chosen GPT model to generate the desired output.
 
-### `npm run build`
+## 🛠️ Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Local Development Environment
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone the repository:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```bash
+   git clone git@github.com:chunrapeepat/codeprompt.git
+   ```
 
-### `npm run eject`
+2. Install the required packages:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+   ```bash
+   cd codeprompt
+   yarn
+   ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. Build the application:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+   ```bash
+   yarn build
+   ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+4. Start the development server:
 
-## Learn More
+   ```bash
+   yarn start
+   ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 👥 Contributing
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Contributions to CodePrompt are welcome and encouraged! To contribute, please follow these steps:
+
+1. Fork the repository
+2. Create a new branch
+3. Make your changes
+4. Push your changes to your fork
+5. Submit a pull request
+
+Or, if you have any fun ideas, go to [the issues page](https://github.com/chunrapeepat/codeprompt/issues) and post them there 🔥
+
+---
+
+Crafted with 💖 by [@chunrapeepat](https://twitter.com/chunrapeepat)
