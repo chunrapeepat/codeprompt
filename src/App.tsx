@@ -2,6 +2,7 @@ import React from "react";
 import { Steps } from "antd";
 import styled from "styled-components";
 import SelectModel from "./SelectModel";
+import MODELS from "./common/models";
 
 const Container = styled.div`
   width: 800px;
@@ -37,6 +38,9 @@ const Footer = () => {
 };
 
 function App() {
+  const [step, setStep] = React.useState(0);
+  const [selectedModel, setSelectedModel] = React.useState(null);
+
   return (
     <Container>
       <Header />
@@ -46,7 +50,7 @@ function App() {
           <Steps
             direction="vertical"
             size="small"
-            current={0}
+            current={step}
             items={[
               {
                 title: "Select Model",
@@ -68,7 +72,18 @@ function App() {
           />
         </div>
         <div>
-          <SelectModel onSelectionChange={console.log} />
+          <SelectModel
+            onSelectionChange={(modelId) => {
+              setSelectedModel(MODELS[modelId]);
+              setStep(Math.min(step + 1, 4));
+            }}
+          />
+
+          {step >= 1 && (
+            <div>
+              <h2>Select Repo</h2>
+            </div>
+          )}
         </div>
       </Grid>
       <Footer />

@@ -1,34 +1,11 @@
 import { Button, Select } from "antd";
 import { useState } from "react";
+import MODELS from "./common/models";
 
 const { Option } = Select;
 
-const modelData: { [key: string]: any } = {
-  "gpt-3.5": {
-    name: "GPT-3.5-TURBO",
-    description:
-      "Most capable GPT-3.5 model and optimized for chat at 1/10th the cost of text-davinci-003. Will be updated with our latest model iteration.",
-    maxTokens: "4,096",
-    trainingData: "Up to Sep 2021",
-  },
-  "gpt-4": {
-    name: "GPT-4",
-    description:
-      "More capable than any GPT-3.5 model, able to do more complex tasks, and optimized for chat. Will be updated with our latest model iteration.",
-    maxTokens: "8,192",
-    trainingData: "Up to Sep 2021",
-  },
-  "gpt-4-32k": {
-    name: "GPT-4-32K",
-    description:
-      "Same capabilities as the base gpt-4 mode but with 4x the context length. Will be updated with our latest model iteration.",
-    maxTokens: "32,768",
-    trainingData: "Up to Sep 2021",
-  },
-};
-
 interface Props {
-  onSelectionChange: (value: any) => void;
+  onSelectionChange: (value: string) => void;
 }
 const SelectModel = ({ onSelectionChange }: Props) => {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -43,6 +20,8 @@ const SelectModel = ({ onSelectionChange }: Props) => {
 
   return (
     <div>
+      <h2>Select Model</h2>
+
       <Select
         showSearch
         style={{ width: 200 }}
@@ -60,15 +39,15 @@ const SelectModel = ({ onSelectionChange }: Props) => {
           <div>
             <p>
               <span>
-                <b>Model:</b> {modelData[selectedItem].name}
+                <b>Model:</b> {MODELS[selectedItem].name}
               </span>
               <span>
-                <b>Max Tokens:</b> {modelData[selectedItem].maxTokens}
+                <b>Max Tokens:</b> {MODELS[selectedItem].maxTokens}
               </span>
             </p>
-            <p>{modelData[selectedItem].description}</p>
+            <p>{MODELS[selectedItem].description}</p>
             <p>
-              <b>Training data:</b> {modelData[selectedItem].trainingData}
+              <b>Training data:</b> {MODELS[selectedItem].trainingData}
             </p>
           </div>
 
