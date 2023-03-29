@@ -1,49 +1,75 @@
-import React, { useState } from "react";
+import React from "react";
+import { Steps } from "antd";
 import styled from "styled-components";
-import GPTRepoLoader from "./GPTRepoLoader";
-import KeysHandler from "./KeysHandler";
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+  width: 800px;
+  margin: auto auto;
 `;
-
-function App() {
-  const [prompt, setPrompt] = useState("");
-  const [fileContents, setFileContents] = useState<any[]>([]);
-  const [openAIKey, setOpenAIKey] = useState(
-    localStorage.getItem("openAIKey") || ""
-  );
-  const handleKeysSubmit = (openAIKey: string) => {
-    setOpenAIKey(openAIKey);
-  };
-
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-gap: 20px;
+`;
+const Header = () => {
   return (
     <div>
-      <h1>GPTCoder</h1>
+      <h1>Codeprompt</h1>
       <p>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sapiente,
-        fugit temporibus natus voluptatum animi ex, quas nobis eos consequatur
-        modi sit quos hic sunt praesentium corrupti explicabo beatae
-        perspiciatis error.
+        The repository loader interface for generating the GPT prompt. Inspired
+        by mpoon/gpt-repository-loader.
       </p>
-
-      <h2>Init: Keys</h2>
-      <KeysHandler onSubmit={handleKeysSubmit} />
-
-      <h2>Step 2: GPTRepoLoader</h2>
-      <GPTRepoLoader
-        onSubmit={(prompt, fileContents) => {
-          setPrompt(prompt);
-          setFileContents(fileContents);
-        }}
-      />
-
-      <h2>Step 3: Ask GPT, Render SourceCode</h2>
     </div>
+  );
+};
+const Footer = () => {
+  return (
+    <div>
+      <p>
+        Made with ❤️ by{" "}
+        <a href="" target="_blank" rel="noopener noreferrer">
+          @chunrapeepat
+        </a>
+      </p>
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <Container>
+      <Header />
+
+      <Grid>
+        <div>
+          <Steps
+            direction="vertical"
+            size="small"
+            current={0}
+            items={[
+              {
+                title: "Select Model",
+                description: "Select the GPT model",
+              },
+              {
+                title: "Select Repo",
+                description: "Select the Github repo",
+              },
+              {
+                title: "Config Prompt",
+                description: "Config the prompt",
+              },
+              {
+                title: "Generate Prompt",
+                description: "Generate the prompt for the selected model",
+              },
+            ]}
+          />
+        </div>
+        <div>Hello World</div>
+      </Grid>
+      <Footer />
+    </Container>
   );
 }
 

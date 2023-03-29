@@ -1,5 +1,5 @@
 {
-  "name": "gpt-coder",
+  "name": "codeprompt",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
