@@ -9,6 +9,9 @@ const promptTemplate = `The following text is a Git repository with code. The st
 $GIT_REPO_FILES$
 --END--
 $INSTRUCTION$`;
+const defaultTemplateTokenUsed = countTokens(
+  promptTemplate.replace("$INSTRUCTION$", "").replace("$GIT_REPO_FILES$", "")
+);
 
 interface ConfigPromptProps {
   model: any;
@@ -23,11 +26,21 @@ const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
   const totalTokenUsed =
     editedFiles
       .map((file) => countTokens(file.content))
-      .reduce((a, b) => a + b) + countTokens(instruction);
+      .reduce((a, b) => a + b) +
+    countTokens(instruction) +
+    defaultTemplateTokenUsed;
   const tokenUsedPercentage = 100 * (totalTokenUsed / model.maxTokens);
 
   const handleSubmit = () => {
-    const prompt = "This is a prompt";
+    const prompt = promptTemplate
+      .replace("$INSTRUCTION$", instruction)
+      .replace(
+        "$GIT_REPO_FILES$",
+        editedFiles
+          .map((file) => `----\n${file.path}\n${file.content}`)
+          .join("\n")
+      );
+
     onSubmit(prompt);
   };
 

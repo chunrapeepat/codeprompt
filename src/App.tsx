@@ -11,6 +11,9 @@ import {
   HeartFilled,
   TwitterOutlined,
 } from "@ant-design/icons";
+import MonacoEditor from "@monaco-editor/react";
+import { StepHeading } from "./common/components";
+import CopyButton from "./common/CopyButton";
 
 const Container = styled.div`
   width: 800px;
@@ -203,7 +206,47 @@ function App() {
             />
           )}
 
-          {step >= 3 && <div>This is a prompt {prompt}</div>}
+          {step >= 3 && (
+            <div style={{ marginTop: 40 }}>
+              <StepHeading>Prompt Generated 🎉</StepHeading>
+              <p
+                style={{
+                  fontWeight: 500,
+                  fontStyle: "italic",
+                  color: "#555",
+                  fontSize: "0.875rem",
+                }}
+              >
+                Copy the prompt below to feed the GPT on{" "}
+                <a
+                  target="_blank"
+                  href="https://chat.openai.com/chat"
+                  style={{ color: "#555" }}
+                >
+                  The Official ChatGPT interface
+                </a>
+                .
+              </p>
+              <div
+                style={{ borderRadius: 15, overflow: "hidden", marginTop: 25 }}
+              >
+                <MonacoEditor
+                  height={500}
+                  value={prompt}
+                  language="markdown"
+                  theme="vs-dark"
+                  options={{
+                    fontSize: 14,
+                    lineNumbers: "off",
+                    readOnly: true,
+                    minimap: { enabled: false },
+                  }}
+                />
+              </div>
+
+              <CopyButton text={prompt} />
+            </div>
+          )}
         </div>
       </Grid>
       <Footer />
