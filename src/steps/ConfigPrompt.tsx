@@ -37,12 +37,12 @@ const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
     [instruction]
   );
   useEffect(() => {
-    const newEditedFiles = editedFiles.map((file) => {
+    const newEditedFiles = files.map((file: any) => {
       file.tokenUsed = countTokens(file.content);
       return file;
     });
     setEditedFiles(newEditedFiles);
-  }, []);
+  }, [files]);
 
   const totalTokenUsed =
     editedFiles.map((file) => file.tokenUsed || 0).reduce((a, b) => a + b) +

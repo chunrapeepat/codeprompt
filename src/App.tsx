@@ -228,14 +228,11 @@ function App() {
                 </a>
                 .
               </p>
-              <div
-                style={{ borderRadius: 15, overflow: "hidden", marginTop: 25 }}
-              >
+              <div style={{ border: "1px solid #ccc", marginTop: 25 }}>
                 <MonacoEditor
                   height={500}
                   value={prompt}
                   language="markdown"
-                  theme="vs-dark"
                   options={{
                     fontSize: 14,
                     lineNumbers: "off",
