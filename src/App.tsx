@@ -1,6 +1,7 @@
 import React from "react";
 import { Steps } from "antd";
 import styled from "styled-components";
+import SelectModel from "./SelectModel";
 
 const Container = styled.div`
   width: 800px;
@@ -66,7 +67,9 @@ function App() {
             ]}
           />
         </div>
-        <div>Hello World</div>
+        <div>
+          <SelectModel onSelectionChange={console.log} />
+        </div>
       </Grid>
       <Footer />
     </Container>
