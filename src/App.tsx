@@ -81,7 +81,6 @@ const Header = () => {
 };
 const FooterContainer = styled.div`
   padding: 50px 0;
-  padding-top: 70px;
   text-align: center;
   color: #555;
 
@@ -113,6 +112,25 @@ const Footer = () => {
   );
 };
 
+const stepItems = [
+  {
+    title: "Select Model",
+    description: "Select the GPT model",
+  },
+  {
+    title: "Select Repo",
+    description: "Select the Github repo",
+  },
+  {
+    title: "Config Prompt",
+    description: "Config the prompt",
+  },
+  {
+    title: "Finish",
+    description: "Copy the prompt to GPT",
+  },
+];
+
 function App() {
   const [step, setStep] = React.useState(0);
   const [selectedModel, setSelectedModel] = React.useState(null);
@@ -130,24 +148,24 @@ function App() {
               direction="vertical"
               size="small"
               current={step}
-              items={[
-                {
-                  title: "Select Model",
-                  description: "Select the GPT model",
-                },
-                {
-                  title: "Select Repo",
-                  description: "Select the Github repo",
-                },
-                {
-                  title: "Config Prompt",
-                  description: "Config the prompt",
-                },
-                {
-                  title: "Finish",
-                  description: "Copy the prompt to GPT",
-                },
-              ]}
+              items={stepItems.map((item) => {
+                return {
+                  title: (
+                    <b
+                      style={{
+                        fontFamily: "Source Code Pro",
+                      }}
+                    >
+                      {item.title}
+                    </b>
+                  ),
+                  description: (
+                    <div style={{ fontStyle: "italic" }}>
+                      {item.description}
+                    </div>
+                  ),
+                };
+              })}
             />
           </Sticky>
         </div>
