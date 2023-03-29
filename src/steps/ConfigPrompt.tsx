@@ -23,7 +23,9 @@ interface ConfigPromptProps {
   onSubmit: (prompt: string) => void;
 }
 const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
-  const [instruction, setInstruction] = useState<string>("");
+  const [instruction, setInstruction] = useState<string>(
+    `Write me a ...\nDon't output any message. Just output the filename and code block, which contain the content of files.`
+  );
   const [editedFiles, setEditedFiles] =
     useState<
       (GithubFileObject & { isExpanded?: boolean; tokenUsed?: number })[]
