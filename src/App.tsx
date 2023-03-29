@@ -6,6 +6,7 @@ import MODELS from "./common/models";
 import SelectRepo from "./steps/SelectRepo";
 import { GithubFileObject } from "./common/github.interface";
 import ConfigPrompt from "./steps/ConfigPrompt";
+import { GithubOutlined, TwitterOutlined } from "@ant-design/icons";
 
 const Container = styled.div`
   width: 800px;
@@ -20,15 +21,58 @@ const Sticky = styled.div`
   position: sticky;
   top: 30px;
 `;
+const HeaderContainer = styled.div`
+  padding: 50px 0;
+  padding-top: 70px;
+
+  & h1 {
+    font-family: "Source Code Pro";
+    margin: 0;
+    color: #333;
+  }
+  & p {
+    font-style: italic;
+    font-weight: 500;
+  }
+  & .grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  & a {
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 5rem;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+  }
+`;
 const Header = () => {
   return (
-    <div>
-      <h1>Codeprompt</h1>
-      <p>
-        The repository loader interface for generating the GPT prompt. Inspired
-        by mpoon/gpt-repository-loader.
-      </p>
-    </div>
+    <HeaderContainer>
+      <div className="grid">
+        <h1>{`<CodePrompt />`}</h1>
+        <div>
+          <a
+            href="https://github.com/chunrapeepat/codeprompt"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ marginRight: 10 }}
+          >
+            <GithubOutlined style={{ marginRight: 5 }} /> Star on Github
+          </a>
+          <a
+            href="https://twitter.com/chunrapeepat"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <TwitterOutlined />
+          </a>
+        </div>
+      </div>
+      <p>A code repository loader interface for generating the GPT prompt.</p>
+    </HeaderContainer>
   );
 };
 const Footer = () => {
