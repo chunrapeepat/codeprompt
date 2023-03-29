@@ -94,7 +94,7 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
 
   return (
     <div style={{ marginTop: 40 }}>
-      <StepHeading>2. Select Repo</StepHeading>
+      <StepHeading>2. Select Repo & Files</StepHeading>
 
       <Input.Search
         addonBefore="Github Public Repo URL:"
