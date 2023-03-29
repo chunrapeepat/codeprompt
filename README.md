@@ -9,9 +9,9 @@
 
 CodePrompt is an experiment and an attempt to let GPT write more complex code while taking into consideration of the project's context. This includes tasks such as implementing a function that evolves edits on multiple files, creating new components while reusing existing functions, etc.
 
-The inspiration and ideas for this project were primarily drawn from mpoon/gpt-repository-loader. However, due to its limitations in loading all files into the prompt and encountering token context limit issues, using gpt-repository-loader is currently impractical.
+The inspiration and ideas for this project were primarily drawn from [mpoon/gpt-repository-loader](https://github.com/mpoon/gpt-repository-loader). However, due to its limitations in loading all files into the prompt and encountering token context limit issues, using gpt-repository-loader is currently impractical.
 
-So in CodePrompt, we add functionalities such as file selection and code editing, which enable developers to selectively choose relevant files and specific portions of code based to build a GPT prompt on their requirements.
+So in CodePrompt, we add functionalities such as file selection and code editing, which enable developers to selectively choose relevant files and specific portions of code to build a GPT prompt based on their requirements.
 
 [Try it yourself](https://codeprompt.xyz), [Report a Bug / Request a Feature](https://github.com/chunrapeepat/codeprompt/issues)
 
@@ -36,8 +36,7 @@ So in CodePrompt, we add functionalities such as file selection and code editing
 2. Install the required packages:
 
    ```bash
-   cd codeprompt
-   yarn
+   cd codeprompt && yarn
    ```
 
 3. Build the application:
