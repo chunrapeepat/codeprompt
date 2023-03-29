@@ -1,13 +1,27 @@
 import { Button, Select } from "antd";
 import { useState } from "react";
+import styled from "styled-components";
+import { StepHeading } from "../common/components";
 import MODELS from "../common/models";
+import { numberWithCommas } from "../utils/helper";
 
 const { Option } = Select;
 
-interface Props {
+const ModelInfo = styled.div`
+  background: #e5f3f3;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin: 15px 0;
+
+  & p > span {
+    margin-right: 15px;
+  }
+`;
+
+interface SelectModelProps {
   onSelectionChange: (value: string) => void;
 }
-const SelectModel = ({ onSelectionChange }: Props) => {
+const SelectModel = ({ onSelectionChange }: SelectModelProps) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const handleChange = (value: any) => {
@@ -20,7 +34,7 @@ const SelectModel = ({ onSelectionChange }: Props) => {
 
   return (
     <div>
-      <h2>Select Model</h2>
+      <StepHeading>1. Select Model</StepHeading>
 
       <Select
         showSearch
@@ -36,20 +50,21 @@ const SelectModel = ({ onSelectionChange }: Props) => {
 
       {selectedItem && (
         <>
-          <div>
+          <ModelInfo>
             <p>
               <span>
                 <b>Model:</b> {MODELS[selectedItem].name}
               </span>
               <span>
-                <b>Max Tokens:</b> {MODELS[selectedItem].maxTokens}
+                <b>Max Tokens:</b>{" "}
+                {numberWithCommas(MODELS[selectedItem].maxTokens)}
               </span>
             </p>
             <p>{MODELS[selectedItem].description}</p>
             <p>
-              <b>Training data:</b> {MODELS[selectedItem].trainingData}
+              <b>Training Data:</b> {MODELS[selectedItem].trainingData}
             </p>
-          </div>
+          </ModelInfo>
 
           <Button onClick={handleSubmit}>Select Model</Button>
         </>
