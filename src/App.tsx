@@ -6,7 +6,11 @@ import MODELS from "./common/models";
 import SelectRepo from "./steps/SelectRepo";
 import { GithubFileObject } from "./common/github.interface";
 import ConfigPrompt from "./steps/ConfigPrompt";
-import { GithubOutlined, TwitterOutlined } from "@ant-design/icons";
+import {
+  GithubOutlined,
+  HeartFilled,
+  TwitterOutlined,
+} from "@ant-design/icons";
 
 const Container = styled.div`
   width: 800px;
@@ -75,16 +79,37 @@ const Header = () => {
     </HeaderContainer>
   );
 };
+const FooterContainer = styled.div`
+  padding: 50px 0;
+  padding-top: 70px;
+  text-align: center;
+  color: #555;
+
+  & p {
+    font-style: italic;
+    font-weight: 500;
+  }
+  & a {
+    color: #555;
+    text-decoration: none;
+    font-weight: 700;
+    font-family: "Source Code Pro";
+  }
+`;
 const Footer = () => {
   return (
-    <div>
+    <FooterContainer>
       <p>
-        Made with ❤️ by{" "}
-        <a href="" target="_blank" rel="noopener noreferrer">
+        Made with <HeartFilled style={{ color: "#ff68b4" }} /> by{" "}
+        <a
+          href="https://twitter.com/chunrapeepat"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           @chunrapeepat
         </a>
       </p>
-    </div>
+    </FooterContainer>
   );
 };
 
