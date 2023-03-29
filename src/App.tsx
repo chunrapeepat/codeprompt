@@ -193,6 +193,7 @@ function App() {
           {step >= 2 && (
             <ConfigPrompt
               files={files}
+              model={selectedModel}
               onSubmit={(prompt) => {
                 setPrompt(prompt);
 

@@ -1,4 +1,4 @@
-import { Button, Card, Input } from "antd";
+import { Button, Card, Divider, Input, Progress } from "antd";
 import { useState } from "react";
 import { StepHeading } from "../common/components";
 import { GithubFileObject } from "../common/github.interface";
@@ -11,13 +11,20 @@ $GIT_REPO_FILES$
 $INSTRUCTION$`;
 
 interface ConfigPromptProps {
+  model: any;
   files: GithubFileObject[];
   onSubmit: (prompt: string) => void;
 }
-const ConfigPrompt = ({ files, onSubmit }: ConfigPromptProps) => {
+const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
   const [instruction, setInstruction] = useState<string>("");
   const [editedFiles, setEditedFiles] =
     useState<(GithubFileObject & { isExpanded?: boolean })[]>(files);
+
+  const totalTokenUsed =
+    editedFiles
+      .map((file) => countTokens(file.content))
+      .reduce((a, b) => a + b) + countTokens(instruction);
+  const tokenUsedPercentage = 100 * (totalTokenUsed / model.maxTokens);
 
   const handleSubmit = () => {
     const prompt = "This is a prompt";
@@ -101,7 +108,38 @@ const ConfigPrompt = ({ files, onSubmit }: ConfigPromptProps) => {
           onChange={(e) => setInstruction(e.target.value)}
         />
       </Card>
-      <Button style={{ marginTop: 15 }} onClick={handleSubmit}>
+
+      <div
+        style={{
+          background: "#f7f7f7",
+          padding: "10px 15px 0px 15px",
+          borderRadius: 15,
+          marginTop: 25,
+        }}
+      >
+        <span
+          style={{
+            color: "#555",
+            fontStyle: "italic",
+            fontSize: "0.875rem",
+            fontWeight: 500,
+            display: "block",
+          }}
+        >
+          Token used: {numberWithCommas(totalTokenUsed)} /{" "}
+          {numberWithCommas(model.maxTokens)} ({model.name})
+        </span>
+        <Progress
+          percent={tokenUsedPercentage}
+          showInfo={false}
+          status={tokenUsedPercentage >= 100 ? "exception" : "active"}
+        />
+      </div>
+      <Button
+        style={{ marginTop: 10 }}
+        onClick={handleSubmit}
+        disabled={tokenUsedPercentage >= 100}
+      >
         Generate Prompt
       </Button>
     </div>
