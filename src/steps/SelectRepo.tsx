@@ -3,40 +3,7 @@ import { Tree } from "antd";
 import { Key } from "antd/es/table/interface";
 import { DataNode } from "antd/es/tree";
 import { base64Decode, formatGithubURL, isFolder, isImage } from "../helper";
-
-interface GithubObject {
-  name: string;
-  path: string;
-  sha: string;
-  size: number;
-  url: string;
-  html_url: string;
-  git_url: string;
-  download_url: string | null;
-  type: string;
-  _links: {
-    self: string;
-    git: string;
-    html: string;
-  };
-}
-interface GithubFileObject {
-  content: string;
-  name: string;
-  path: string;
-  sha: string;
-  size: number;
-  url: string;
-  html_url: string;
-  git_url: string;
-  download_url: string | null;
-  type: string;
-  _links: {
-    self: string;
-    git: string;
-    html: string;
-  };
-}
+import { GithubFileObject, GithubObject } from "../common/github.interface";
 
 async function processContent(contents: GithubObject[]): Promise<DataNode[]> {
   const result: DataNode[] = [];
@@ -63,7 +30,7 @@ async function processContent(contents: GithubObject[]): Promise<DataNode[]> {
 }
 
 interface Props {
-  onSubmit: (fileContents: GithubFileObject[]) => void;
+  onSubmit: (files: GithubFileObject[]) => void;
 }
 const SelectRepo = ({ onSubmit }: Props) => {
   const [repoUrl, setRepoUrl] = useState<string>("");
