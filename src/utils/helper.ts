@@ -45,3 +45,67 @@ export function isFolder(filename: string): boolean {
 export function base64Decode(str: string): string {
   return atob(str);
 }
+
+export function getMonacoLanguageFromFilename(filename: string): string {
+  const fileExtension = filename.substr(filename.lastIndexOf("."));
+
+  let monacoLanguage = "plaintext";
+
+  switch (fileExtension) {
+    case ".js":
+    case ".jsx":
+      monacoLanguage = "javascript";
+      break;
+    case ".ts":
+    case ".tsx":
+      monacoLanguage = "typescript";
+      break;
+    case ".html":
+      monacoLanguage = "html";
+      break;
+    case ".css":
+      monacoLanguage = "css";
+      break;
+    case ".json":
+      monacoLanguage = "json";
+      break;
+    case ".xml":
+      monacoLanguage = "xml";
+      break;
+    case ".sql":
+      monacoLanguage = "sql";
+      break;
+    case ".md":
+      monacoLanguage = "markdown";
+      break;
+    case ".py":
+      monacoLanguage = "python";
+      break;
+    case ".java":
+      monacoLanguage = "java";
+      break;
+    case ".c":
+      monacoLanguage = "c";
+      break;
+    case ".cpp":
+      monacoLanguage = "cpp";
+      break;
+    case ".cs":
+      monacoLanguage = "csharp";
+      break;
+    case ".php":
+      monacoLanguage = "php";
+      break;
+    case ".go":
+      monacoLanguage = "go";
+      break;
+    case ".rb":
+      monacoLanguage = "ruby";
+      break;
+    // Add more file extensions and languages as needed
+    default:
+      monacoLanguage = "plaintext";
+  }
+
+  return monacoLanguage;
+}

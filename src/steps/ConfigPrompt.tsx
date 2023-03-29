@@ -2,7 +2,11 @@ import { Button, Card, Divider, Input, Progress } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { StepHeading } from "../common/components";
 import { GithubFileObject } from "../common/github.interface";
-import { countTokens, numberWithCommas } from "../utils/helper";
+import {
+  countTokens,
+  getMonacoLanguageFromFilename,
+  numberWithCommas,
+} from "../utils/helper";
 import MonacoEditor from "@monaco-editor/react";
 
 const promptTemplate = `The following text is a Git repository with code. The structure of the text is sections that begin with ----, followed by a single line containing the file path and file name, followed by a variable amount of lines containing the file contents. The text representing the repository ends when the symbols --END-- are encountered. Any further text beyond --END-- is meant to be interpreted as instructions using the aforementioned code as context.
@@ -106,6 +110,7 @@ const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
         >
           {file.isExpanded && (
             <MonacoEditor
+              language={getMonacoLanguageFromFilename(file.name)}
               height={500}
               value={file.content}
               options={{
