@@ -1,9 +1,17 @@
 import { useState } from "react";
-import { Tree } from "antd";
+import { Button, Input, Spin, Tree } from "antd";
 import { Key } from "antd/es/table/interface";
 import { DataNode } from "antd/es/tree";
-import { base64Decode, formatGithubURL, isFolder, isImage } from "../helper";
 import { GithubFileObject, GithubObject } from "../common/github.interface";
+import { StepHeading } from "../common/components";
+import { LoadingOutlined } from "@ant-design/icons";
+import {
+  base64Decode,
+  formatGithubURL,
+  formatSize,
+  isFolder,
+  isImage,
+} from "../utils/helper";
 
 async function processContent(contents: GithubObject[]): Promise<DataNode[]> {
   const result: DataNode[] = [];
@@ -11,7 +19,7 @@ async function processContent(contents: GithubObject[]): Promise<DataNode[]> {
   for (const item of contents) {
     if (item.type === "file") {
       result.push({
-        title: item.name + ` (size: ${item.size})`,
+        title: item.name + ` (size: ${formatSize(item.size)})`,
         key: item.path,
       });
     } else if (item.type === "dir") {
@@ -33,15 +41,19 @@ interface Props {
   onSubmit: (files: GithubFileObject[]) => void;
 }
 const SelectRepo = ({ onSubmit }: Props) => {
-  const [repoUrl, setRepoUrl] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [repoURL, setRepoURL] = useState<string>("");
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [checkedKeys, setCheckedKeys] = useState<Key[]>();
 
-  const loadRepoStructure = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const loadRepo = async (repoURL: string) => {
+    setRepoURL(repoURL);
+    setIsLoading(true);
+
     try {
+      const url = formatGithubURL(repoURL);
       const response = await fetch(
-        `https://api.github.com/repos/${repoUrl}/contents/`
+        `https://api.github.com/repos/${url}/contents/`
       );
       const contents = await response.json();
       const treeData = await processContent(contents);
@@ -50,53 +62,69 @@ const SelectRepo = ({ onSubmit }: Props) => {
     } catch (error) {
       console.error(error);
     }
-  };
 
-  const handleRepoUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRepoUrl(formatGithubURL(event.target.value));
+    setIsLoading(false);
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
+    const url = formatGithubURL(repoURL);
     const filenames =
       checkedKeys
         ?.map((f) => f.toString())
         .filter((f) => !isImage(f) && !isFolder(f)) || [];
 
-    const fileContents = await Promise.all(
+    const files = await Promise.all(
       filenames.map((filename) =>
-        fetch(
-          `https://api.github.com/repos/${repoUrl}/contents/${filename}`
-        ).then((res) => {
-          const data = res.json().then((data) => {
-            data.content = base64Decode(data.content);
+        fetch(`https://api.github.com/repos/${url}/contents/${filename}`).then(
+          (res) => {
+            const data = res.json().then((data) => {
+              data.content = base64Decode(data.content);
+              return data;
+            });
             return data;
-          });
-          return data;
-        })
+          }
+        )
       )
     );
 
-    onSubmit(fileContents);
+    setIsLoading(false);
+    onSubmit(files);
   };
 
   return (
-    <div>
-      <h2>Select Repo</h2>
-      <form onSubmit={loadRepoStructure}>
-        <label>
-          Github Repo URL:
-          <input type="text" onChange={handleRepoUrlChange} />
-        </label>
-        <button type="submit">Load Repo</button>
-      </form>
-      <Tree
-        checkable
-        onCheck={(keys) => setCheckedKeys(keys as Key[])}
-        checkedKeys={checkedKeys}
-        treeData={treeData}
+    <div style={{ marginTop: 40 }}>
+      <StepHeading>2. Select Repo</StepHeading>
+
+      <Input.Search
+        addonBefore="Github Public Repo URL:"
+        placeholder="https://github.com/username/repo"
+        allowClear
+        onSearch={loadRepo}
+        style={{ width: "100%" }}
       />
 
-      <button onClick={handleSubmit}>DONE!</button>
+      {treeData.length > 0 && (
+        <div style={{ marginTop: 15 }}>
+          <Tree
+            checkable
+            onCheck={(keys) => setCheckedKeys(keys as Key[])}
+            checkedKeys={checkedKeys}
+            treeData={treeData}
+          />
+        </div>
+      )}
+      {isLoading && (
+        <Spin
+          style={{ marginTop: 15 }}
+          indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
+        />
+      )}
+      {treeData.length > 0 && (
+        <div style={{ marginTop: 15 }}>
+          <Button onClick={handleSubmit}>Load Files</Button>
+        </div>
+      )}
     </div>
   );
 };

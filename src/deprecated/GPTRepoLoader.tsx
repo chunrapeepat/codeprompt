@@ -2,7 +2,12 @@ import { useState } from "react";
 import { Tree } from "antd";
 import { Key } from "antd/es/table/interface";
 import { DataNode } from "antd/es/tree";
-import { base64Decode, formatGithubURL, isFolder, isImage } from "../helper";
+import {
+  base64Decode,
+  formatGithubURL,
+  isFolder,
+  isImage,
+} from "../utils/helper";
 
 interface GPTRepoLoaderProps {
   onSubmit: (prompt: string, fileContents: any[]) => void;
