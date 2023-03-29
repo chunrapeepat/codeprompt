@@ -75,7 +75,7 @@ const Header = () => {
           </a>
         </div>
       </div>
-      <p>A code repository loader interface for generating the GPT prompt.</p>
+      <p>A code repository loader interface for generating GPT prompt.</p>
     </HeaderContainer>
   );
 };

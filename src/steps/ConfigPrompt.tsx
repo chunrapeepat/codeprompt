@@ -63,7 +63,7 @@ const ConfigPrompt = ({ files, onSubmit }: ConfigPromptProps) => {
         >
           {file.isExpanded && (
             <MonacoEditor
-              height={400}
+              height={500}
               value={file.content}
               options={{
                 minimap: { enabled: false },
