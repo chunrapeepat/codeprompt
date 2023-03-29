@@ -3,7 +3,7 @@
 > CodePrompt is the code repository loader interface that consumes your relevant code and turns it into a GPT prompt — allowing the GPT to write more complex code for you.
 
 <div align="center">
-    <img src="https://codeprompt.xyz/ogimage.jpeg" width="600" />
+    <img src="https://codeprompt.xyz/ogimage.jpeg" width="100%" />
 </div>
 <br/>
 
