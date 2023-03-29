@@ -1,7 +1,15 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import GPTRepoLoader from "./GPTRepoLoader";
 import KeysHandler from "./KeysHandler";
-import PromptQuerier from "./PromptQuerier";
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+`;
 
 function App() {
   const [prompt, setPrompt] = useState("");
@@ -35,11 +43,6 @@ function App() {
       />
 
       <h2>Step 3: Ask GPT, Render SourceCode</h2>
-      <PromptQuerier
-        fileContents={fileContents}
-        basedPrompt={prompt}
-        openAIKey={openAIKey}
-      />
     </div>
   );
 }

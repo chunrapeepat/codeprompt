@@ -1,8 +1,5 @@
-import { encode } from "gpt-token-utils";
-import { ChatCompletionRequestMessage } from "openai";
 import React from "react";
-import ReactDiffViewer from "react-diff-viewer";
-import { generateResponse } from "./utils/openai";
+// import { generateResponse } from "./utils/openai";
 
 interface PromptQuerierProps {
   basedPrompt: string;
@@ -24,31 +21,31 @@ const PromptQuerier: React.FC<PromptQuerierProps> = ({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const prompt = basedPrompt + "\r\n" + instructionPrompt;
-    console.log("prompt token = ", encode(prompt).length);
+    // const prompt = basedPrompt + "\r\n" + instructionPrompt;
+    // console.log("prompt token = ", encode(prompt).length);
 
-    const prompts: ChatCompletionRequestMessage[] = [
-      {
-        role: "user",
-        content: prompt,
-      },
-    ];
-    let msg = await generateResponse(prompts, openAIKey);
-    const result = [msg];
-    while (!msg?.includes("---END---")) {
-      prompts.push({
-        role: "assistant",
-        content: msg,
-      });
-      prompts.push({
-        role: "user",
-        content: "continue",
-      });
-      msg = await generateResponse(prompts, openAIKey);
-      result.push(msg);
-    }
+    // const prompts: ChatCompletionRequestMessage[] = [
+    //   {
+    //     role: "user",
+    //     content: prompt,
+    //   },
+    // ];
+    // let msg = await generateResponse(prompts, openAIKey);
+    // const result = [msg];
+    // while (!msg?.includes("---END---")) {
+    //   prompts.push({
+    //     role: "assistant",
+    //     content: msg,
+    //   });
+    //   prompts.push({
+    //     role: "user",
+    //     content: "continue",
+    //   });
+    //   msg = await generateResponse(prompts, openAIKey);
+    //   result.push(msg);
+    // }
 
-    console.log("debug", result);
+    // console.log("debu", result);
     // setCode(res || "");
   };
 
