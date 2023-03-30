@@ -1,4 +1,4 @@
-import { Button, Select } from "antd";
+import { Radio, Button, Select, RadioChangeEvent } from "antd";
 import { useState } from "react";
 import styled from "styled-components";
 import { StepHeading } from "../common/components";
@@ -22,9 +22,10 @@ interface SelectModelProps {
   onSelectionChange: (value: string) => void;
 }
 const SelectModel = ({ onSelectionChange }: SelectModelProps) => {
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState('gpt-3.5');
 
-  const handleChange = (value: any) => {
+  const handleChange = (e: RadioChangeEvent) => {
+    const value = e.target.value;
     setSelectedItem(value);
   };
   const handleSubmit = () => {
@@ -36,17 +37,15 @@ const SelectModel = ({ onSelectionChange }: SelectModelProps) => {
     <div>
       <StepHeading>1. Select Model</StepHeading>
 
-      <Select
-        showSearch
-        style={{ width: 200 }}
-        placeholder="Select a models"
-        optionFilterProp="children"
+      <Radio.Group
+        defaultValue="gpt-3.5"
+        buttonStyle="solid"
         onChange={handleChange}
       >
-        <Option value="gpt-3.5">GPT-3.5</Option>
-        <Option value="gpt-4">GPT-4</Option>
-        <Option value="gpt-4-32k">GPT-4-32K</Option>
-      </Select>
+        <Radio.Button value="gpt-3.5">GPT-3.5</Radio.Button>
+        <Radio.Button value="gpt-4">GPT-4</Radio.Button>
+        <Radio.Button value="gpt-4-32k">GPT-4-32K</Radio.Button>
+      </Radio.Group>
 
       {selectedItem && (
         <>
@@ -66,7 +65,9 @@ const SelectModel = ({ onSelectionChange }: SelectModelProps) => {
             </p>
           </ModelInfo>
 
-          <Button onClick={handleSubmit}>Select Model</Button>
+          <Button onClick={handleSubmit} type="primary" size="large">
+            Next →
+          </Button>
         </>
       )}
     </div>
