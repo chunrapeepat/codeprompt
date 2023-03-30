@@ -46,7 +46,7 @@ const HeaderContainer = styled.div`
     justify-content: space-between;
     align-items: center;
   }
-  & a {
+  & div > a {
     border: 1px solid #ccc;
     padding: 8px 16px;
     border-radius: 5rem;
@@ -78,7 +78,16 @@ const Header = () => {
           </a>
         </div>
       </div>
-      <p>A code repository loader interface for generating GPT prompt.</p>
+      <p>
+        A code repository loader interface for generating GPT prompt.{" "}
+        <a
+          href="https://twitter.com/chunrapeepat/status/1641108704782356482"
+          target="_blank"
+          style={{ color: "#333" }}
+        >
+          See The Demo
+        </a>
+      </p>
     </HeaderContainer>
   );
 };
