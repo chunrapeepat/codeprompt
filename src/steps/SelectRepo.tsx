@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Button, Input, Spin, Tree } from "antd";
+import { useEffect, useState } from "react";
+import { Button, Checkbox, Input, Spin, Tree } from "antd";
 import { Key } from "antd/es/table/interface";
 import { DataNode } from "antd/es/tree";
 import { GithubFileObject, GithubObject } from "../common/github.interface";
 import { StepHeading } from "../common/components";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import {
   base64Decode,
   formatGithubURL,
@@ -58,6 +58,18 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
   const [accessToken, setAccessToken] = useState<string>("");
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [checkedKeys, setCheckedKeys] = useState<Key[]>();
+  const [usePrivateRepo, setUsePrivateRepo] = useState<boolean>(false);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("github_access_token");
+    if (storedToken) {
+      setAccessToken(storedToken);
+    }
+  }, []);
+
+  const saveAccessToken = () => {
+    localStorage.setItem("github_access_token", accessToken);
+  };
 
   const loadRepo = async (repoURL: string) => {
     setRepoURL(repoURL);
@@ -67,7 +79,7 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
       const url = formatGithubURL(repoURL);
       const response = await fetch(
         `https://api.github.com/repos/${url}/contents/`,
-        accessToken
+        usePrivateRepo
           ? {
               headers: {
                 Authorization: `token ${accessToken}`,
@@ -124,20 +136,59 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
       <StepHeading>Select Repo & Files</StepHeading>
 
       <Input.Search
-        addonBefore="Github Public/Private Repo URL:"
+        addonBefore="Github Repo URL:"
         placeholder="https://github.com/username/repo"
         allowClear
         onSearch={loadRepo}
         style={{ width: "100%" }}
       />
+      <Checkbox
+        style={{ marginTop: 10 }}
+        checked={usePrivateRepo}
+        onChange={(e) => setUsePrivateRepo(e.target.checked)}
+      >
+        Use private repo
+      </Checkbox>
 
-      <Input.Password
-        addonBefore="Access Token:"
-        placeholder="Enter your access token"
-        allowClear
-        onChange={(e) => setAccessToken(e.target.value)}
-        style={{ width: "100%", marginTop: 15 }}
-      />
+      {usePrivateRepo && (
+        <div style={{ marginTop: 10 }}>
+          <Input
+            addonBefore="Github Access Token:"
+            value={accessToken}
+            onChange={(e) => setAccessToken(e.target.value)}
+            style={{ width: "100%" }}
+            type="password"
+          />
+
+          <div
+            style={{
+              display: "flex",
+              textAlign: "center",
+              justifyContent: "space-between",
+              marginTop: 10,
+            }}
+          >
+            <div
+              style={{
+                color: "#555",
+                fontStyle: "italic",
+                fontSize: "0.875rem",
+                marginLeft: 12,
+              }}
+            >
+              <a
+                style={{ color: "#555" }}
+                href="https://github.com/settings/tokens/new"
+                target="_blank"
+              >
+                Get access token
+              </a>{" "}
+              (select "repo" scopes)
+            </div>
+            <Button onClick={saveAccessToken}>Save to Local Storage</Button>
+          </div>
+        </div>
+      )}
 
       {treeData.length > 0 && (
         <div style={{ marginTop: 15 }}>
