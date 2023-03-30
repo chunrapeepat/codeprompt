@@ -60,6 +60,8 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
   const [checkedKeys, setCheckedKeys] = useState<Key[]>();
   const [usePrivateRepo, setUsePrivateRepo] = useState<boolean>(false);
 
+  const [error, setError] = useState<string>("");
+
   useEffect(() => {
     const storedToken = localStorage.getItem("github_access_token");
     if (storedToken) {
@@ -87,12 +89,17 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
             }
           : {}
       );
+      
       const contents = await response.json();
+      if (response.status !== 200) {
+        throw new Error(contents.message);
+      }
       const treeData = await processContent(contents, accessToken);
 
       setTreeData(treeData);
-    } catch (error) {
-      console.error(error);
+    } catch (e: any) {
+      setError(e.message);
+      console.error(e);
     }
 
     setIsLoading(false);
@@ -134,6 +141,10 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
   return (
     <div style={{ marginTop: 40 }}>
       <StepHeading>Select Repo & Files</StepHeading>
+
+      {error && (
+        <div style={{ color: "red", marginTop: 10, marginBottom: 20 }}>{error}</div>
+      )}
 
       <Input.Search
         addonBefore="Github Repo URL:"
