@@ -22,7 +22,7 @@ interface SelectModelProps {
   onSelectionChange: (value: string) => void;
 }
 const SelectModel = ({ onSelectionChange }: SelectModelProps) => {
-  const [selectedItem, setSelectedItem] = useState('gpt-3.5');
+  const [selectedItem, setSelectedItem] = useState("gpt-3.5");
 
   const handleChange = (e: RadioChangeEvent) => {
     const value = e.target.value;
@@ -65,9 +65,7 @@ const SelectModel = ({ onSelectionChange }: SelectModelProps) => {
             </p>
           </ModelInfo>
 
-          <Button onClick={handleSubmit} type="primary" size="large">
-            Next →
-          </Button>
+          <Button onClick={handleSubmit}>Next →</Button>
         </>
       )}
     </div>
