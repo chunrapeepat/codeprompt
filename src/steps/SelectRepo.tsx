@@ -13,7 +13,10 @@ import {
   isImage,
 } from "../utils/helper";
 
-async function processContent(contents: GithubObject[]): Promise<DataNode[]> {
+async function processContent(
+  contents: GithubObject[],
+  accessToken: string
+): Promise<DataNode[]> {
   const result: DataNode[] = [];
 
   for (const item of contents) {
@@ -23,9 +26,18 @@ async function processContent(contents: GithubObject[]): Promise<DataNode[]> {
         key: item.path,
       });
     } else if (item.type === "dir") {
-      const response = await fetch(item._links.self);
+      const response = await fetch(
+        item._links.self,
+        accessToken
+          ? {
+              headers: {
+                Authorization: `token ${accessToken}`,
+              },
+            }
+          : {}
+      );
       const subContents = await response.json();
-      const children = await processContent(subContents);
+      const children = await processContent(subContents, accessToken);
       result.push({
         title: item.name,
         key: item.path,
@@ -43,6 +55,7 @@ interface SelectRepoProps {
 const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [repoURL, setRepoURL] = useState<string>("");
+  const [accessToken, setAccessToken] = useState<string>("");
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [checkedKeys, setCheckedKeys] = useState<Key[]>();
 
@@ -53,10 +66,17 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
     try {
       const url = formatGithubURL(repoURL);
       const response = await fetch(
-        `https://api.github.com/repos/${url}/contents/`
+        `https://api.github.com/repos/${url}/contents/`,
+        accessToken
+          ? {
+              headers: {
+                Authorization: `token ${accessToken}`,
+              },
+            }
+          : {}
       );
       const contents = await response.json();
-      const treeData = await processContent(contents);
+      const treeData = await processContent(contents, accessToken);
 
       setTreeData(treeData);
     } catch (error) {
@@ -76,15 +96,22 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
 
     const files = await Promise.all(
       filenames.map((filename) =>
-        fetch(`https://api.github.com/repos/${url}/contents/${filename}`).then(
-          (res) => {
-            const data = res.json().then((data) => {
-              data.content = base64Decode(data.content);
-              return data;
-            });
+        fetch(
+          `https://api.github.com/repos/${url}/contents/${filename}`,
+          accessToken
+            ? {
+                headers: {
+                  Authorization: `token ${accessToken}`,
+                },
+              }
+            : {}
+        ).then((res) => {
+          const data = res.json().then((data) => {
+            data.content = base64Decode(data.content);
             return data;
-          }
-        )
+          });
+          return data;
+        })
       )
     );
 
@@ -94,14 +121,22 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
 
   return (
     <div style={{ marginTop: 40 }}>
-      <StepHeading>2. Select Repo & Files</StepHeading>
+      <StepHeading>Select Repo & Files</StepHeading>
 
       <Input.Search
-        addonBefore="Github Public Repo URL:"
+        addonBefore="Github Public/Private Repo URL:"
         placeholder="https://github.com/username/repo"
         allowClear
         onSearch={loadRepo}
         style={{ width: "100%" }}
+      />
+
+      <Input.Password
+        addonBefore="Access Token:"
+        placeholder="Enter your access token"
+        allowClear
+        onChange={(e) => setAccessToken(e.target.value)}
+        style={{ width: "100%", marginTop: 15 }}
       />
 
       {treeData.length > 0 && (
