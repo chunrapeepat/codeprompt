@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button, Checkbox, Input, Spin, Tree } from "antd";
+import { Button, Checkbox, Divider, Input, Spin, Tree } from "antd";
 import { Key } from "antd/es/table/interface";
 import { DataNode } from "antd/es/tree";
 import { GithubFileObject, GithubObject } from "../common/github.interface";
 import { StepHeading } from "../common/components";
-import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
+import { LoadingOutlined, StarOutlined } from "@ant-design/icons";
 import {
   base64Decode,
   formatGithubURL,
@@ -12,6 +12,24 @@ import {
   isFolder,
   isImage,
 } from "../utils/helper";
+import styled from "styled-components";
+
+const FavoriteRepos = styled.div`
+  margin-bottom: 20px;
+
+  & > div {
+    cursor: pointer;
+    background: #fefefe;
+    border: 1px solid #ddd;
+    padding: 7px;
+    margin-top: -1px;
+
+    &:hover {
+      border: 1px solid #bbb;
+      background: #fafafa;
+    }
+  }
+`;
 
 async function processContent(
   contents: GithubObject[],
@@ -59,10 +77,17 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [checkedKeys, setCheckedKeys] = useState<Key[]>();
   const [usePrivateRepo, setUsePrivateRepo] = useState<boolean>(false);
-
+  const [favoriteRepos, setFavoriteRepos] = useState<
+    { url: string; usePrivateRepo: boolean }[]
+  >([]);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
+    const storedFavoriteRepos = localStorage.getItem("favorite_repos");
+    if (storedFavoriteRepos) {
+      setFavoriteRepos(JSON.parse(storedFavoriteRepos));
+    }
+
     const storedToken = localStorage.getItem("github_access_token");
     if (storedToken) {
       setAccessToken(storedToken);
@@ -138,6 +163,21 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
     onSubmit(files);
   };
 
+  const addFavoriteRepo = () => {
+    const favoriteRepos = JSON.parse(
+      localStorage.getItem("favorite_repos") || "[]"
+    );
+
+    const newRepo = {
+      url: repoURL,
+      usePrivateRepo,
+    };
+    if (!favoriteRepos.find((repo: any) => repo.url === newRepo.url)) {
+      favoriteRepos.push(newRepo);
+      localStorage.setItem("favorite_repos", JSON.stringify(favoriteRepos));
+    }
+  };
+
   return (
     <div style={{ marginTop: 40 }}>
       <StepHeading>Select Repo & Files</StepHeading>
@@ -147,6 +187,23 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
           {error}
         </div>
       )}
+
+      <FavoriteRepos>
+        {favoriteRepos.map((repo: any, index: number) => (
+          <div
+            key={index}
+            onClick={() => {
+              setUsePrivateRepo(repo.usePrivateRepo);
+              loadRepo(repo.url);
+            }}
+          >
+            <span>{formatGithubURL(repo.url)}</span>
+            <span style={{ marginLeft: 7, color: "#777" }}>
+              {repo.usePrivateRepo ? "(private)" : "(public)"}
+            </span>
+          </div>
+        ))}
+      </FavoriteRepos>
 
       <Input.Search
         addonBefore="Github Repo URL:"
@@ -203,6 +260,8 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
         </div>
       )}
 
+      <Divider />
+
       {treeData.length > 0 && (
         <div style={{ marginTop: 15 }}>
           <Tree
@@ -211,6 +270,14 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
             checkedKeys={checkedKeys}
             treeData={treeData}
           />
+
+          <Button
+            onClick={addFavoriteRepo}
+            type="dashed"
+            style={{ marginLeft: 25, marginTop: 10 }}
+          >
+            <StarOutlined /> Mark Repo as Favorite
+          </Button>
         </div>
       )}
       {isLoading && (
