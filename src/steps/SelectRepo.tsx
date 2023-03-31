@@ -4,7 +4,11 @@ import { Key } from "antd/es/table/interface";
 import { DataNode } from "antd/es/tree";
 import { GithubFileObject, GithubObject } from "../common/github.interface";
 import { StepHeading } from "../common/components";
-import { LoadingOutlined, StarOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  LoadingOutlined,
+  StarOutlined,
+} from "@ant-design/icons";
 import {
   base64Decode,
   formatGithubURL,
@@ -23,6 +27,10 @@ const FavoriteRepos = styled.div`
     border: 1px solid #ddd;
     padding: 7px;
     margin-top: -1px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     &:hover {
       border: 1px solid #bbb;
@@ -174,9 +182,25 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
       usePrivateRepo,
     };
     if (!favoriteRepos.find((repo: any) => repo.url === newRepo.url)) {
-      favoriteRepos.push(newRepo);
-      localStorage.setItem("favorite_repos", JSON.stringify(favoriteRepos));
+      const newFavRepos = [...favoriteRepos, newRepo];
+      setFavoriteRepos(newFavRepos);
+      localStorage.setItem("favorite_repos", JSON.stringify(newFavRepos));
     }
+  };
+
+  const removeFavoriteRepo = (index: number) => {
+    const updatedFavoriteRepos = favoriteRepos.filter((_, i) => i !== index);
+    setFavoriteRepos(updatedFavoriteRepos);
+    localStorage.setItem(
+      "favorite_repos",
+      JSON.stringify(updatedFavoriteRepos)
+    );
+  };
+
+  const isRepoFavorited = () => {
+    return favoriteRepos.some(
+      (repo) => formatGithubURL(repo.url) === formatGithubURL(repoURL)
+    );
   };
 
   return (
@@ -191,16 +215,23 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
 
       <FavoriteRepos>
         {favoriteRepos.map((repo: any, index: number) => (
-          <div
-            key={index}
-            onClick={() => {
-              loadRepo(repo.url, repo.usePrivateRepo);
-            }}
-          >
-            <span>{formatGithubURL(repo.url)}</span>
-            <span style={{ marginLeft: 7, color: "#777" }}>
-              {repo.usePrivateRepo ? "(private)" : "(public)"}
-            </span>
+          <div key={index}>
+            <div
+              onClick={() => {
+                loadRepo(repo.url, repo.usePrivateRepo);
+              }}
+            >
+              {formatGithubURL(repo.url)}
+              <span style={{ marginLeft: 7, color: "#777" }}>
+                {repo.usePrivateRepo ? "(private)" : "(public)"}
+              </span>
+            </div>
+            <div>
+              <CloseOutlined
+                onClick={() => removeFavoriteRepo(index)}
+                style={{ marginLeft: 5, cursor: "pointer" }}
+              />
+            </div>
           </div>
         ))}
       </FavoriteRepos>
@@ -271,13 +302,15 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
             treeData={treeData}
           />
 
-          <Button
-            onClick={addFavoriteRepo}
-            type="dashed"
-            style={{ marginLeft: 25, marginTop: 10 }}
-          >
-            <StarOutlined /> Mark Repo as Favorite
-          </Button>
+          {!isRepoFavorited() && (
+            <Button
+              onClick={addFavoriteRepo}
+              type="dashed"
+              style={{ marginLeft: 25, marginTop: 10 }}
+            >
+              <StarOutlined /> Mark Repo as Favorite
+            </Button>
+          )}
         </div>
       )}
       {isLoading && (
