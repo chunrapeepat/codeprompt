@@ -8,6 +8,7 @@ import {
   numberWithCommas,
 } from "../utils/helper";
 import MonacoEditor from "@monaco-editor/react";
+import { DeleteOutlined } from "@ant-design/icons";
 
 const promptTemplate = `The following text is a Git repository with code. The structure of the text is sections that begin with ----, followed by a single line containing the file path and file name, followed by a variable amount of lines containing the file contents. The text representing the repository ends when the symbols --END-- are encountered. Any further text beyond --END-- is meant to be interpreted as instructions using the aforementioned code as context.
 $GIT_REPO_FILES$
@@ -81,6 +82,12 @@ const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
     setTimeoutId(newTimeoutId);
   };
 
+  const handleDeleteFile = (index: number) => {
+    const newFiles = [...editedFiles];
+    newFiles.splice(index, 1);
+    setEditedFiles(newFiles);
+  };
+
   return (
     <div style={{ marginTop: 40 }}>
       <StepHeading>3. Config Prompt</StepHeading>
@@ -105,8 +112,20 @@ const ConfigPrompt = ({ model, files, onSubmit }: ConfigPromptProps) => {
           style={{ marginBottom: 20 }}
           size="small"
           extra={
-            <div style={{ color: "#555", fontStyle: "italic" }}>
-              Token used: {numberWithCommas(file.tokenUsed || 0)}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ color: "#555", fontStyle: "italic" }}>
+                Token used: {numberWithCommas(file.tokenUsed || 0)}
+              </div>
+              <DeleteOutlined
+                style={{ cursor: "pointer", marginLeft: 10 }}
+                onClick={() => handleDeleteFile(index)}
+              />
             </div>
           }
         >
