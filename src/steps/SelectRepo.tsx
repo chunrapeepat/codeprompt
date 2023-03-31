@@ -98,7 +98,8 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
     localStorage.setItem("github_access_token", accessToken);
   };
 
-  const loadRepo = async (repoURL: string) => {
+  const loadRepo = async (repoURL: string, usePrivateRepo: boolean) => {
+    setError("");
     setRepoURL(repoURL);
     setIsLoading(true);
 
@@ -193,8 +194,7 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
           <div
             key={index}
             onClick={() => {
-              setUsePrivateRepo(repo.usePrivateRepo);
-              loadRepo(repo.url);
+              loadRepo(repo.url, repo.usePrivateRepo);
             }}
           >
             <span>{formatGithubURL(repo.url)}</span>
@@ -209,7 +209,7 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
         addonBefore="Github Repo URL:"
         placeholder="https://github.com/username/repo"
         allowClear
-        onSearch={loadRepo}
+        onSearch={(value) => loadRepo(value, usePrivateRepo)}
         style={{ width: "100%" }}
       />
       <Checkbox
