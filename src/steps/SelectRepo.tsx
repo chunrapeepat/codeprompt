@@ -89,7 +89,7 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
             }
           : {}
       );
-      
+
       const contents = await response.json();
       if (response.status !== 200) {
         throw new Error(contents.message);
@@ -143,7 +143,9 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
       <StepHeading>Select Repo & Files</StepHeading>
 
       {error && (
-        <div style={{ color: "red", marginTop: 10, marginBottom: 20 }}>{error}</div>
+        <div style={{ color: "red", marginTop: 10, marginBottom: 20 }}>
+          {error}
+        </div>
       )}
 
       <Input.Search
@@ -212,10 +214,12 @@ const SelectRepo = ({ onSubmit }: SelectRepoProps) => {
         </div>
       )}
       {isLoading && (
-        <Spin
-          style={{ marginTop: 15 }}
-          indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
-        />
+        <div>
+          <Spin
+            style={{ marginTop: 15 }}
+            indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
+          />
+        </div>
       )}
       {treeData.length > 0 && (
         <div style={{ marginTop: 15 }}>

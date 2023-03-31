@@ -5,8 +5,6 @@ import { StepHeading } from "../common/components";
 import MODELS from "../common/models";
 import { numberWithCommas } from "../utils/helper";
 
-const { Option } = Select;
-
 const ModelInfo = styled.div`
   background: #e5f3f3;
   padding: 10px 20px;
